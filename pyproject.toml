@@ -5,7 +5,16 @@ description = "Text mining pipeline for NFL draft analysis"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+  "matplotlib>=3.10.8",
+  "nbconvert>=7.17.0",
+  "nbformat>=5.10.4",
+  "nltk>=3.9.3",
   "pandas>=2.2.3",
+  "rapidfuzz>=3.14.3",
+  "scikit-learn>=1.8.0",
+  "spacy>=3.8.11",
+  "xgboost>=3.2.0",
+  "gensim>=4.3.0",
 ]
 
 [dependency-groups]
