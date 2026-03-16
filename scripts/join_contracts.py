@@ -105,17 +105,14 @@ for i, (_, row) in enumerate(draft.iterrows(), 1):
     else:
         candidates = last_name_groups.get_group(last)
 
-        # Step 2: narrow to candidates matching BOTH draft year AND draft team.
-        # Requiring two independent identifiers makes false positives essentially
-        # impossible (different people with same last name rarely share year+team).
-        year_team_cands = candidates[
-            (candidates["draft_year"] == draft_year) &
-            (candidates["draft_team"].apply(team_nick) == draft_team_nick)
-        ] if (draft_year and draft_team_nick) else pd.DataFrame()
+        # Step 2: narrow to candidates matching draft year.
+        year_cands = candidates[
+            candidates["draft_year"] == draft_year
+        ] if draft_year else pd.DataFrame()
 
-        if len(year_team_cands) == 1:
-            # Unique last-name + year + team match: accept even with nickname mismatch
-            idx = year_team_cands.index[0]
+        if len(year_cands) == 1:
+            # Unique last-name + year match: accept even with nickname mismatch
+            idx = year_cands.index[0]
             match_row = contracts.loc[idx, contract_cols]
             team_first = contracts.loc[idx, "_first"]
             score = first_name_score(first, team_first)
@@ -126,8 +123,8 @@ for i, (_, row) in enumerate(draft.iterrows(), 1):
                     f"(first: {first!r} -> {team_first!r}, score={score:.0f})"
                 )
         else:
-            # Multiple year+team candidates or no match: fuzzy on first name
-            search_pool = year_team_cands if len(year_team_cands) > 1 else candidates
+            # Multiple year candidates or no match: fuzzy on first name
+            search_pool = year_cands if len(year_cands) > 1 else candidates
             first_names = search_pool["_first"].tolist()
 
             # Step 3: fuzzy on first name only (prefix match boosted to 95)
