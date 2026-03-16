@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \":*)",
+      "Read(//c/Users/sffra/AppData/Local/Temp/claude/c--Users-sffra-Downloads-BSE-2025-2026-nfl-draft-nlp/tasks/**)",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\(''data/processed/draft_enriched_with_contracts.csv''\\); print\\(list\\(df[''Pos_Group''].dropna\\(\\).unique\\(\\)\\)\\); print\\(''grade nulls:'', df[''grade''].isna\\(\\).sum\\(\\)\\); print\\(''grade range:'', round\\(df[''grade''].min\\(\\),2\\), ''-'', round\\(df[''grade''].max\\(\\),2\\)\\)\")",
+      "Bash(uv run:*)",
+      "Bash(python:*)",
+      "Bash(uv add:*)",
+      "Bash(.venv/Scripts/python.exe -m spacy download en_core_web_sm)"
+    ]
+  }
+}
