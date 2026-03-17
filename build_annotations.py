@@ -40,42 +40,42 @@ ANCHOR_SEEDS = {
     'physical': [
         'explosive', 'burst', 'speed', 'acceleration', 'first_step', 'get_off',
         'change_of_direction', 'agility', 'frame', 'size', 'strength',
-        'power', 'athletic', 'physical', 'twitch', 'measurable',
+        'power', 'athletic', 'twitch', 'measurable',
     ],
     'technique': [
-        'technique', 'footwork', 'leverage', 'pad_level', 'mechanics', 'productive',
+        'technique', 'footwork', 'leverage', 'pad_level', 'mechanics',
         'route_running', 'pass_protection', 'hand_fighting', 'block_shedding',
-        'anchor_strength', 'pass_rush', 'blocking', 'tackling', 'coverage',
+        'pass_rush', 'blocking', 'tackling', 'coverage',
     ],
     'character': [
         'effort', 'motor', 'high_motor', 'relentless', 'competitive',
         'toughness', 'instinct', 'awareness', 'intelligence', 'football_iq',
-        'coachable', 'discipline', 'leadership', 'work_ethic', 'recognition',
+        'coachable', 'discipline', 'leadership', 'work_ethic',
     ],
 }
 
 CENTROID_EXTRAS = {
     'physical': [
-        'height', 'length', 'wingspan', 'arm', 'velocity', 'cannon',
+        'height', 'length', 'wingspan', 'arm', 'cannon',
         'speed', 'quickness', 'burst', 'lean', 'thick', 'frame',
-        'undersized', 'size', 'weight', 'hands', 'feet',
-        'arms', 'lower_half', 'body_control',
+        'size', 'weight', 'hands', 'feet',
+        'arms', 'lower_half',
         'explosion', 'vertical', 'hip_flexibility',
-        'measurable', 'physicality',
+        'measurable',
+        'run_support',
     ],
     'technique': [
         'throw', 'release', 'delivery', 'pocket', 'accuracy', 'timing',
         'separation', 'route_running', 'pass_rush', 'bull_rush',
-        'vision', 'tackling', 'coverage', 'blocking', 'sack', 'ball_skills',
-        'catch_radius', 'catches', 'pressure', 'spin_move', 'swim_move', 'run_support',
-        'production',
+        'tackling', 'coverage', 'blocking', 'sack', 'ball_skills', 'catches',
+        'pressure', 'spin_move', 'swim_move',
     ],
     'character': [
         'hustle', 'grit', 'relentless', 'compete', 'smart', 'cerebral',
         'coachable', 'leadership', 'patient', 'composure', 'instinct',
-        'mature', 'immature', 'processing', 'dedicated', 'personality',
+        'mature', 'immature', 'dedicated', 'personality',
         'fearless', 'inconsistencies', 'aggressive', 'durable',
-        'focus', 'confidence', 'poise', 'decisive', 'decisiveness', 'competitive',
+        'confidence', 'decisive', 'decisiveness', 'competitive',
     ],
 }
 
@@ -117,6 +117,14 @@ NFL_STOPWORDS |= {
 
 _COORD_CONJ  = re.compile(r'\s+(?:and|or)\s+', re.IGNORECASE)
 _SKIP_ENT_TYPES = {'ORG', 'GPE', 'NORP', 'FAC', 'LOC'}
+_BACKGROUND_ROOTS = {
+    'football', 'league', 'season', 'game', 'series', 'sport', 'match',
+    'conference', 'division', 'bowl', 'championship', 'playoff',
+    'career', 'draft', 'round', 'pick', 'year', 'class',
+    'school', 'college', 'university', 'program', 'team', 'club',
+    'story', 'docuseries', 'episode', 'book', 'report',
+    'rep', 'reps', 'snap', 'snaps',
+}
 lemmatizer   = WordNetLemmatizer()
 
 def _apply_phrases(text):
@@ -228,6 +236,8 @@ def annotate_doc(doc):
                 for ch in range(ent.start_char, ent.end_char):
                     ent_char_set.add(ch)
         if any(ch in ent_char_set for ch in range(chunk.start_char, chunk.end_char)):
+            continue
+        if chunk.root.lemma_.lower() in _BACKGROUND_ROOTS:
             continue
         # split on coordinating conjunctions
         sub_spans = []
