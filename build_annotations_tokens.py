@@ -49,34 +49,78 @@ ANCHOR_SEEDS = {
         'explosive', 'burst', 'speed', 'acceleration', 'first_step', 'get_off',
         'change_of_direction', 'agility', 'frame', 'size', 'strength',
         'power', 'athletic', 'physical', 'twitch',
-        'foot',     # covers "feet" after lemmatization
-        'hip',      # hips, hip mobility, hip flexibility
-        'weight',   # body mass / build descriptors
-        'arm',      # arm length; covers "arms"
-        'edge_to_edge',  # hyphen-normalized out of W2V vocab
+        'foot',                 # covers "feet" after lemmatization
+        'hip',                  # hips, hip mobility, hip flexibility
+        'weight',               # body mass / build descriptors
+        'arm',                  # arm length; covers "arms"
+        'edge_to_edge',         # hyphen-normalized out of W2V vocab
+        'contact',              # RB: 477; physical toughness, through contact
+        'downhill',             # LB: 312; aggressive downhill attack style
+        # ── new compound seeds (from LDA bigram analysis) ────────────────────
+        'play_strength',        # power at point of attack — appears across all positions
+        'foot_quickness',       # OL: 244, DB: 115, WR: 110
+        'through_contact',      # RB: 127; physical toughness
+        'recovery_speed',       # DB: 141; athletic recovery ability
+        'closing_burst',        # EDGE: 95, DT: 52; explosive close
+        'core_strength',        # OL: 227; foundational power
+        'sideline_to_sideline', # LB: 113; range / athleticism
+        'pursuit_speed',        # LB: 72; closing/chase speed
+        'arm_talent',           # QB: 136; arm physical ability
+        'long_arm',             # EDGE: 127, OL: 130; measurable
+        'size_speed',           # WR: 111; athletic profile
+        'initial_quickness',    # DT: 66; first-step explosion
     ],
     'technique': [
         'technique', 'footwork', 'leverage', 'pad_level', 'mechanics', 'release',
         'route_running', 'press_coverage', 'man_coverage', 'zone_coverage',
         'pass_protection', 'hand_fighting', 'block_shedding',
         'anchor_strength', 'pass_rush', 'blocking', 'tackling', 'coverage',
-        'tackle',    # lemmatization gap ("tackle" ≠ "tackling" in W2V)
-        'catch',     # receiver technique
-        'throw',     # QB mechanics
-        'transition', # coverage transitions
-        'delivery',  # QB arm mechanics
-        'accuracy',  # QB technique
+        'tackle',           # lemmatization gap ("tackle" ≠ "tackling" in W2V)
+        'catch',            # receiver technique
+        'throw',            # QB mechanics
+        'transition',       # coverage transitions
+        'delivery',         # QB arm mechanics
+        'accuracy',         # QB technique
+        # ── new seeds from LDA unigram analysis ───────────────────────────────
+        'hand',             # OL: 1681, EDGE: 1035; hand technique
+        'separation',       # WR: 518; creating separation from coverage
+        'pocket',           # QB: 648; pocket passing ability
+        'zone',             # DB: 705; zone coverage skill
+        'cut',              # RB: 819; cutting ability
+        'vision',           # RB: 415; field vision (also IQ — shared seed)
+        'block',            # OL: 2501, DT: 909; blocking
+        # ── new compound seeds (from LDA bigram analysis) ────────────────────
+        'catch_point',      # DB: 219; ball skills at catch point
+        'out_break',        # WR: 305, TE: 106; outside breaking routes
+        'route_tree',       # WR: 119; route running repertoire
+        'route_runner',     # WR: 291, TE: 90; role label (same class as pass_rusher)
+        'ball_tracking',    # WR: 124; tracking ball in air
+        'break_tackle',     # RB: 72; elusiveness
+        'ball_security',    # RB: 94; fumble protection
+        'one_cut',          # RB: 120; running style
+        'jump_cut',         # RB: 95; cutting ability
+        'fall_forward',     # RB: 78; running technique
+        'double_team',      # DT: 310; handling double teams
+        'drive_blocker',    # OL: 205; blocking technique
+        'missed_tackle',    # LB: 48; tackling technique (negative signal)
+        'deep_ball',        # QB: 128; QB technique
+        'pocket_passer',    # QB; role/technique
+        'pocket_mobility',  # QB: 33; pocket movement technique
+        'second_level',     # OL: 603; blocking at the second level
     ],
     'character': [
         'effort', 'motor', 'high_motor', 'relentless', 'competitive', 'ego',
         'toughness', 'instinct', 'awareness', 'intelligence', 'football_iq',
         'coachable', 'discipline', 'leadership', 'work_ethic', 'recognition',
+        # ── new seeds from LDA analysis ───────────────────────────────────────
+        'read',             # QB/LB/DB: reads the defense = football IQ
+        'vision',           # RB: field vision = IQ (also in technique)
     ],
 }
 
 # ── Curated phrase map (longest-first after sort) ─────────────────────────────
 _CURATED_RAW = {
-    # Trigrams
+    # ── Trigrams ──────────────────────────────────────────────────────────────
     'change of direction':   'change_of_direction',
     'stack and shed':        'stack_and_shed',
     'run after catch':       'run_after_catch',
@@ -84,7 +128,8 @@ _CURATED_RAW = {
     'point of attack':       'point_of_attack',
     'block shedding':        'block_shedding',
     'anchor strength':       'anchor_strength',
-    # Seed-critical bigrams
+    'sideline to sideline':  'sideline_to_sideline',
+    # ── Seed-critical bigrams ─────────────────────────────────────────────────
     'pass protection':       'pass_protection',
     'pass coverage':         'pass_coverage',
     'pass rusher':           'pass_rusher',
@@ -102,7 +147,7 @@ _CURATED_RAW = {
     'work ethic':            'work_ethic',
     'first step':            'first_step',
     'get off':               'get_off',
-    # Physical extras
+    # ── Physical extras ───────────────────────────────────────────────────────
     'body control':          'body_control',
     'lateral quickness':     'lateral_quickness',
     'quick twitch':          'quick_twitch',
@@ -114,8 +159,20 @@ _CURATED_RAW = {
     'lower half':            'lower_half',
     'hip flexibility':       'hip_flexibility',
     'catch radius':          'catch_radius',
-    'edge-to-edge':          'edge_to_edge',      # hyphen form for raw-text colorize matching
-    # Technique extras
+    'edge-to-edge':          'edge_to_edge',
+    'play strength':         'play_strength',
+    'foot quickness':        'foot_quickness',
+    'through contact':       'through_contact',
+    'recovery speed':        'recovery_speed',
+    'closing burst':         'closing_burst',
+    'core strength':         'core_strength',
+    'pursuit speed':         'pursuit_speed',
+    'arm talent':            'arm_talent',
+    'long arms':             'long_arm',
+    'long arm':              'long_arm',
+    'size speed':            'size_speed',
+    'initial quickness':     'initial_quickness',
+    # ── Technique extras ──────────────────────────────────────────────────────
     'run blocking':          'run_blocking',
     'ball skills':           'ball_skills',
     'contact balance':       'contact_balance',
@@ -137,8 +194,26 @@ _CURATED_RAW = {
     'contested catch':       'contested_catch',
     'run defense':           'run_defense',
     'pursuit angle':         'pursuit_angle',
-    'punch-and-pull':        'punch_and_pull',    # hyphen form; "punch" seeds individual word color
-    # Character / IQ extras
+    'punch-and-pull':        'punch_and_pull',
+    'catch point':           'catch_point',
+    'out breaking':          'out_break',
+    'out break':             'out_break',
+    'route runner':          'route_runner',
+    'route tree':            'route_tree',
+    'ball tracking':         'ball_tracking',
+    'break tackle':          'break_tackle',
+    'ball security':         'ball_security',
+    'one cut':               'one_cut',
+    'jump cut':              'jump_cut',
+    'fall forward':          'fall_forward',
+    'double team':           'double_team',
+    'drive blocker':         'drive_blocker',
+    'missed tackle':         'missed_tackle',
+    'deep ball':             'deep_ball',
+    'pocket passer':         'pocket_passer',
+    'pocket mobility':       'pocket_mobility',
+    'second level':          'second_level',
+    # ── Character / IQ extras ────────────────────────────────────────────────
     'football intelligence': 'football_intelligence',
     'play recognition':      'play_recognition',
     'decision making':       'decision_making',
